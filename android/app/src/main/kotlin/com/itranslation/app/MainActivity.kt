@@ -1,4 +1,4 @@
-package com.example.norsk_tolk
+package com.itranslation.app
 
 import io.flutter.embedding.android.FlutterActivity
 

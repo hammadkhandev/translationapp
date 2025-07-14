@@ -50,19 +50,20 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBap_EW5y2ta_gMG4dSjds_Bl-ww1KgMDY',
-    appId: '1:268105183404:android:c4a2efa1cf82e9af6f6f09',
-    messagingSenderId: '268105183404',
-    projectId: 'translationapp-621e9',
-    storageBucket: 'translationapp-621e9.firebasestorage.app',
+    apiKey: 'AIzaSyAdOg_LxgFh3wvs48b8pYrA1HM-yJbHKOw',
+    appId: '1:893830471888:android:96ac85ffd14dd05f61fed5',
+    messagingSenderId: '893830471888',
+    projectId: 'itranslation-1981b',
+    storageBucket: 'itranslation-1981b.firebasestorage.app',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyBB98mKt8sOvfe8f3Vvp7V5mRT9evPGTmA',
-    appId: '1:268105183404:ios:0ca7505c0b2fc0056f6f09',
-    messagingSenderId: '268105183404',
-    projectId: 'translationapp-621e9',
-    storageBucket: 'translationapp-621e9.firebasestorage.app',
+    apiKey: 'AIzaSyBW-nKoj4yOYR5XZqz4ORR5Q3tOfvFzq1s',
+    appId: '1:893830471888:ios:e2d78ddc5ea0bffe61fed5',
+    messagingSenderId: '893830471888',
+    projectId: 'itranslation-1981b',
+    storageBucket: 'itranslation-1981b.firebasestorage.app',
+    iosClientId: '893830471888-n30e0dassi2mcgje7erve2clc6079dq5.apps.googleusercontent.com',
     iosBundleId: 'com.example.norskTolk',
   );
 

@@ -1,26 +1,43 @@
 {
   "project_info": {
-    "project_number": "268105183404",
-    "project_id": "translationapp-621e9",
-    "storage_bucket": "translationapp-621e9.firebasestorage.app"
+    "project_number": "893830471888",
+    "project_id": "itranslation-1981b",
+    "storage_bucket": "itranslation-1981b.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:268105183404:android:c4a2efa1cf82e9af6f6f09",
+        "mobilesdk_app_id": "1:893830471888:android:96ac85ffd14dd05f61fed5",
         "android_client_info": {
-          "package_name": "com.example.norsk_tolk"
+          "package_name": "com.itranslation.app"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "893830471888-vau5hqcj5odjtpqqmpvgkt9fr6gth8mb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
-          "current_key": "AIzaSyBap_EW5y2ta_gMG4dSjds_Bl-ww1KgMDY"
+          "current_key": "AIzaSyAdOg_LxgFh3wvs48b8pYrA1HM-yJbHKOw"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "893830471888-vau5hqcj5odjtpqqmpvgkt9fr6gth8mb.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "893830471888-n30e0dassi2mcgje7erve2clc6079dq5.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.norskTolk"
+              }
+            }
+          ]
         }
       }
     }
