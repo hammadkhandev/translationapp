@@ -6,7 +6,7 @@ import 'package:norsk_tolk/firebase_options.dart';
 import 'package:norsk_tolk/theme/dark_theme.dart';
 import 'package:norsk_tolk/theme/light_theme.dart';
 import 'package:norsk_tolk/views/splash/splash.dart';
-
+//itranslator
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(

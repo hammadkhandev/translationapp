@@ -1,0 +1,2 @@
+D:/project/norsk_tolk/android/app/.cxx/Debug/4c102l6n/armeabi-v7a/CMakeFiles/edit_cache.dir
+D:/project/norsk_tolk/android/app/.cxx/Debug/4c102l6n/armeabi-v7a/CMakeFiles/rebuild_cache.dir
