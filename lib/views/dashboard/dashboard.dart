@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:norsk_tolk/utils/images.dart';
 import 'package:norsk_tolk/views/dashboard/translation_input.dart';
-import 'package:norsk_tolk/views/dashboard/translator_widget.dart';
+
 
 import '../../utils/colors.dart';
 import '../translation/translation_screen.dart';
