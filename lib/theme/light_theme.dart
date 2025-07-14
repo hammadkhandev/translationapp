@@ -35,7 +35,9 @@ ThemeData light(BuildContext context) => ThemeData(
       textButtonTheme: textButtonTheme(context),
       inputDecorationTheme: inputDecorationThemeLight(context),
       dropdownMenuTheme: dropdownMenuThemeLight(context),
-      // dialogTheme: dialogThemeLight(context),
+      dialogTheme: const DialogThemeData(
+            backgroundColor: Colors.white,
+      ),//dialogThemeLight(context),
       bottomSheetTheme: bottomSheetThemeLight(context),
       dividerTheme: dividerThemeLight(context),
     );

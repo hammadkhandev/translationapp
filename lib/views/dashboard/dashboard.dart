@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:norsk_tolk/utils/images.dart';
 
+import '../../utils/colors.dart';
+import 'language_selector.dart';
+
 class Dashboard extends StatefulWidget {
   const Dashboard({super.key});
 
@@ -15,42 +18,54 @@ class _DashboardState extends State<Dashboard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
       body: Center(
-          child: Stack(
-        children: [
-          Image.asset(
-            Images.map,
-            height: 1.sh,
-            width: 1.sw,
-            fit: BoxFit.cover,
-          ),
-          Positioned(
-              top: 0,
-              child: Container(
-                padding: EdgeInsets.only(left: 25.sp, right: 25.sp, top: 25.sp),
-                height: 80.sp,
-                width: 1.sw,
-                color: Theme.of(context).primaryColor,
-                child: Row(
-                  children: [
-                    Image.asset(
-                      Images.logo,
-                      height: 50.sp,
-                      width: 50.sp,
-                    ),
-                    Spacer(),
-                    Icon(
-                      Icons.settings,
-                    ),
-                  ],
-                ),
-              )),
-          Positioned(
-            bottom: 120.sp,
-            child: LanguageSwapSelector(),
-          ),
-        ],
-      )),
+          child: Container(
+            decoration: BoxDecoration(
+              image: DecorationImage(image: AssetImage(Images.map,))
+            ),
+            child: Column(
+                    children: [
+            // Image.asset(
+            //   Images.map,
+            //   height: 1.sh,
+            //   width: 1.sw,
+            //   fit: BoxFit.cover,
+            // ),
+            Positioned(
+                top: 0,
+                child: Container(
+                  padding: EdgeInsets.only(left: 25.sp, right: 25.sp, top: 25.sp),
+                  height: 80.sp,
+                  width: 1.sw,
+                  color: Theme.of(context).primaryColor,
+                  child: Row(
+                    children: [
+                      Image.asset(
+                        Images.splashLogo,
+                        height: 50.sp,
+                        width: 100.sp,
+                      ),
+                      Spacer(),
+                      Icon(
+                        Icons.settings_outlined,
+                        color: textColorLight,
+
+                      ),
+                    ],
+                  ),
+                )),
+                      LanguageSelector(
+                        sourceLanguage: 'English USA',
+                        targetLanguage: 'French',
+                      ),
+            // Positioned(
+            //   bottom: 120.sp,
+            //   child: LanguageSwapSelector(),
+            // ),
+                    ],
+                  ),
+          )),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (index) {
@@ -105,6 +120,8 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 }
+
+
 
 class LanguageSwapSelector extends StatefulWidget {
   const LanguageSwapSelector({super.key});

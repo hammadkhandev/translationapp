@@ -38,6 +38,12 @@ ThemeData dark(BuildContext context) => ThemeData(
       inputDecorationTheme: inputDecorationThemeDark(context),
       dropdownMenuTheme: dropdownMenuThemeDark(context),
       // dialogTheme: dialogThemeDark(context),
+  dialogTheme: DialogThemeData(
+      backgroundColor: Colors.grey[900],
+      // shape: RoundedRectangleBorder(
+      //   borderRadius: BorderRadius.circular(12),
+      // ),
+  ),
       bottomSheetTheme: bottomSheetThemeDark(context),
       dividerTheme: dividerThemeDark(context),
       popupMenuTheme: PopupMenuThemeData(
