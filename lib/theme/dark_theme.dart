@@ -37,7 +37,7 @@ ThemeData dark(BuildContext context) => ThemeData(
       textButtonTheme: textButtonTheme(context),
       inputDecorationTheme: inputDecorationThemeDark(context),
       dropdownMenuTheme: dropdownMenuThemeDark(context),
-      dialogTheme: dialogThemeDark(context),
+      // dialogTheme: dialogThemeDark(context),
       bottomSheetTheme: bottomSheetThemeDark(context),
       dividerTheme: dividerThemeDark(context),
       popupMenuTheme: PopupMenuThemeData(

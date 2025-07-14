@@ -1,7 +1,9 @@
 const String logo = 'assets/images/logo.png';
+const String splashLogo = 'assets/images/splash_logo.png';
 
 class Images {
   static const String logo = 'assets/images/logo.png';
+  static const String splashLogo = 'assets/images/splash_logo.png';
   static const String persons = 'assets/images/persons.png';
   static const String lng = 'assets/images/ln.png';
   static const String bn = 'assets/images/bn.png';

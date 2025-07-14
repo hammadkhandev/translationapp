@@ -23,7 +23,7 @@ class _AnimatedLogoState extends State<SplashView> with SingleTickerProviderStat
 
     _animation = CurvedAnimation(parent: _controller, curve: Curves.easeInOut);
 
-    Future.delayed(const Duration(seconds: 4), () {
+    Future.delayed(const Duration(seconds: 2), () {
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(
@@ -36,10 +36,12 @@ class _AnimatedLogoState extends State<SplashView> with SingleTickerProviderStat
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: ScaleTransition(
-          scale: _animation,
-          child: Image.asset(logo, width: 300, height: 300),
-        ),
+        child:
+        // ScaleTransition(
+        //   scale: _animation,
+        //   child:
+          Image.asset(Images.splashLogo, width: 300, height: 300),
+        // ),
       ),
     );
   }
