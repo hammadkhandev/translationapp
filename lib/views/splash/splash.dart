@@ -27,7 +27,7 @@ class _AnimatedLogoState extends State<SplashView> with SingleTickerProviderStat
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => const LoginView(),
+            builder: (context) =>  LoginView(),
           ));
     });
   }

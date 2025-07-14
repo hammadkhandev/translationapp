@@ -1,0 +1,2 @@
+D:/project/norsk_tolk/android/app/.cxx/RelWithDebInfo/4w96zkm7/arm64-v8a/CMakeFiles/edit_cache.dir
+D:/project/norsk_tolk/android/app/.cxx/RelWithDebInfo/4w96zkm7/arm64-v8a/CMakeFiles/rebuild_cache.dir
