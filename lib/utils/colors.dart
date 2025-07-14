@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 Color primaryColor = const Color(0xff1A98FF);
+
 Color secondaryColor = Colors.white;
 
 // background colors#1A98FF
@@ -29,6 +30,7 @@ Color disabledColorDark = const Color(0xFFB0B0B0);
 // hint colors
 const Color hintColorLight = Color(0xff606060);
 const Color hintColorDark = Color(0xFF909090);
+const Color hintTextColor = Color(0xFF6B7280);
 
 // text colors
 const Color textColorLight = Colors.black;
