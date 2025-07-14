@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:norsk_tolk/utils/images.dart';
+import 'package:norsk_tolk/views/dashboard/translation_input.dart';
+
 
 import '../../utils/colors.dart';
+import '../translation/translation_screen.dart';
 import 'language_selector.dart';
 
 class Dashboard extends StatefulWidget {
@@ -14,18 +17,43 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> {
   int _currentIndex = 0;
+  String inputText = '';
+  String translatedText = '';
 
+
+
+  void _onTextChanged(String text) {
+    setState(() {
+      inputText = text;
+    });
+  }
+
+  void _clearText() {
+    setState(() {
+      inputText = '';
+      translatedText = '';
+    });
+  }
+
+  void _translateText() {
+    // Simulate translation
+    setState(() {
+      translatedText = 'Translated: $inputText';
+    });
+    Navigator.push(context, MaterialPageRoute(builder: (_) => TranslationScreen()));
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
       body: Center(
           child: Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(image: AssetImage(Images.map,))
-            ),
-            child: Column(
-                    children: [
+        decoration: BoxDecoration(
+            image: DecorationImage(
+                image: AssetImage(
+          Images.map,
+        ))),
+        child: Column(
+          children: [
             // Image.asset(
             //   Images.map,
             //   height: 1.sh,
@@ -35,7 +63,8 @@ class _DashboardState extends State<Dashboard> {
             Positioned(
                 top: 0,
                 child: Container(
-                  padding: EdgeInsets.only(left: 25.sp, right: 25.sp, top: 25.sp),
+                  padding:
+                      EdgeInsets.only(left: 25.sp, right: 25.sp, top: 25.sp),
                   height: 80.sp,
                   width: 1.sw,
                   color: Theme.of(context).primaryColor,
@@ -50,22 +79,27 @@ class _DashboardState extends State<Dashboard> {
                       Icon(
                         Icons.settings_outlined,
                         color: textColorLight,
-
                       ),
                     ],
                   ),
                 )),
-                      LanguageSelector(
-                        sourceLanguage: 'English USA',
-                        targetLanguage: 'French',
-                      ),
+            LanguageSelector(
+              sourceLanguage: 'English USA',
+              targetLanguage: 'French',
+            ),
+            // TranslatorWidget(),
+            TranslationInput(
+              onTextChanged: _onTextChanged,
+              onClear: _clearText,
+              onTranslate: _translateText,
+            ),
             // Positioned(
             //   bottom: 120.sp,
             //   child: LanguageSwapSelector(),
             // ),
-                    ],
-                  ),
-          )),
+          ],
+        ),
+      )),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (index) {
@@ -75,9 +109,12 @@ class _DashboardState extends State<Dashboard> {
         },
         selectedItemColor: Theme.of(context).colorScheme.secondary,
         unselectedItemColor: Colors.grey, // Unselected item color
-        selectedLabelStyle:
-            Theme.of(context).textTheme.labelLarge?.copyWith(inherit: true, color: Theme.of(context).primaryColor),
-        unselectedLabelStyle: Theme.of(context).textTheme.labelLarge?.copyWith(inherit: true),
+        selectedLabelStyle: Theme.of(context)
+            .textTheme
+            .labelLarge
+            ?.copyWith(inherit: true, color: Theme.of(context).primaryColor),
+        unselectedLabelStyle:
+            Theme.of(context).textTheme.labelLarge?.copyWith(inherit: true),
 
         backgroundColor: Theme.of(context).primaryColor,
         items: [
@@ -86,7 +123,9 @@ class _DashboardState extends State<Dashboard> {
               Images.voice,
               height: 20.sp,
               width: 20.sp,
-              color: _currentIndex == 0 ? Theme.of(context).colorScheme.secondary : Colors.grey,
+              color: _currentIndex == 0
+                  ? Theme.of(context).colorScheme.secondary
+                  : Colors.grey,
             ),
             label: 'Voice',
           ),
@@ -111,7 +150,9 @@ class _DashboardState extends State<Dashboard> {
               Images.camara,
               height: 20.sp,
               width: 20.sp,
-              color: _currentIndex == 1 ? Theme.of(context).colorScheme.secondary : Colors.grey,
+              color: _currentIndex == 1
+                  ? Theme.of(context).colorScheme.secondary
+                  : Colors.grey,
             ),
             label: 'Camera',
           ),
@@ -120,8 +161,6 @@ class _DashboardState extends State<Dashboard> {
     );
   }
 }
-
-
 
 class LanguageSwapSelector extends StatefulWidget {
   const LanguageSwapSelector({super.key});

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../utils/colors.dart';
+import '../../utils/styles.dart';
 
 
 class LanguageSelector extends StatefulWidget {
@@ -46,7 +47,7 @@ class _LanguageSelectorState extends State<LanguageSelector> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
       child: Row(
         children: [
           // Source Language
@@ -64,17 +65,18 @@ class _LanguageSelectorState extends State<LanguageSelector> {
                   )
                   ],
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(12),
                   border: Border.all(color: dividerColorLight),
                 ),
                 child: Center(
                   child: Text(
                     sourceLanguage,
-                    style: const TextStyle(
+                    style: labelSmall(context).copyWith(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
                       color: textColorLight,
                     ),
+
                   ),
                 ),
               ),
@@ -104,7 +106,7 @@ class _LanguageSelectorState extends State<LanguageSelector> {
                 padding: const EdgeInsets.symmetric(vertical: 8),
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(12),
                   border: Border.all(color: dividerColorLight),
                   boxShadow: [BoxShadow(
                       blurRadius: 6,
@@ -116,8 +118,7 @@ class _LanguageSelectorState extends State<LanguageSelector> {
                 child: Center(
                   child: Text(
                     targetLanguage,
-                    textAlign: TextAlign.right,
-                    style: const TextStyle(
+                    style: labelSmall(context).copyWith(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
                       color: textColorLight,
