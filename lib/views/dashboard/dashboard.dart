@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:norsk_tolk/utils/images.dart';
 import 'package:norsk_tolk/views/dashboard/translation_input.dart';
 
-
+import '../../service/openai_service.dart';
 import '../../utils/colors.dart';
 import '../translation/translation_screen.dart';
 import 'language_selector.dart';
@@ -19,8 +19,11 @@ class _DashboardState extends State<Dashboard> {
   int _currentIndex = 0;
   String inputText = '';
   String translatedText = '';
+  String _translated = '';
+  bool _loading = false;
 
-
+  String sourceLanguage = 'English USA';
+  String targetLanguage = 'French';
 
   void _onTextChanged(String text) {
     setState(() {
@@ -40,8 +43,17 @@ class _DashboardState extends State<Dashboard> {
     setState(() {
       translatedText = 'Translated: $inputText';
     });
-    Navigator.push(context, MaterialPageRoute(builder: (_) => TranslationScreen()));
+
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (_) => TranslationScreen(
+                  inputText: inputText,
+                  sourceLanguage: sourceLanguage,
+                  targetLanguage: targetLanguage,
+                )));
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,8 +73,7 @@ class _DashboardState extends State<Dashboard> {
             //   fit: BoxFit.cover,
             // ),
             Container(
-              padding:
-                  EdgeInsets.only(left: 25.sp, right: 25.sp, top: 25.sp),
+              padding: EdgeInsets.only(left: 25.sp, right: 25.sp, top: 25.sp),
               height: 80.sp,
               width: 1.sw,
               color: Theme.of(context).primaryColor,
@@ -82,8 +93,8 @@ class _DashboardState extends State<Dashboard> {
               ),
             ),
             LanguageSelector(
-              sourceLanguage: 'English USA',
-              targetLanguage: 'French',
+              sourceLanguage: sourceLanguage,
+              targetLanguage: targetLanguage,
             ),
             // TranslatorWidget(),
             TranslationInput(

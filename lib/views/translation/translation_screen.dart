@@ -1,12 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../../service/openai_service.dart';
+import '../../utils/app_constns.dart';
 import '../../utils/colors.dart';
 import '../../utils/images.dart';
 import '../../utils/styles.dart';
+import 'package:flutter_tts/flutter_tts.dart';
+
 
 class TranslationScreen extends StatefulWidget {
-  const TranslationScreen({Key? key}) : super(key: key);
+  final String inputText;
+  final String sourceLanguage;
+  final String targetLanguage;
+  const TranslationScreen({
+    required this.inputText,
+    Key? key,
+    required this.sourceLanguage,
+    required this.targetLanguage,
+  }) : super(key: key);
 
   @override
   State<TranslationScreen> createState() => _TranslationScreenState();
@@ -14,81 +26,79 @@ class TranslationScreen extends StatefulWidget {
 
 class _TranslationScreenState extends State<TranslationScreen> {
   final TextEditingController _inputController = TextEditingController();
-  String sourceLanguage = 'English USA';
-  String targetLanguage = 'French';
+  final FocusNode _focusNode = FocusNode();
+  final _translator = OpenAIService(AppConstns.gptToke);
+
   String translatedText = '';
   bool _isTranslating = false;
-  final FocusNode _focusNode = FocusNode();
   bool _hasText = false;
+
+  final FlutterTts flutterTts = FlutterTts();
 
   @override
   void initState() {
     super.initState();
-    // Pre-populate with demo text
-    _inputController.text = 'Hello, I want to know mre about you';
-    translatedText = 'Bonjour, je voudrais en savoir plus sur vous';
+    _inputController.text = widget.inputText;
+    _onTranslatePressed();
     _inputController.addListener(_onTextChanged);
   }
+
   void _onTextChanged() {
     setState(() {
       _hasText = _inputController.text.isNotEmpty;
     });
-
   }
-
-
-
 
   void _clearText() {
-    if (_hasText){
-      setState(() {
-      _inputController.clear();
-      translatedText = '';
-    });}
-  }
-
-  void _translateText() async {
     if (_hasText) {
-      if (_inputController.text.isEmpty) return;
-
       setState(() {
-        _isTranslating = true;
-      });
-
-
-      // Simulate translation delay
-      await Future.delayed(const Duration(milliseconds: 800));
-
-      setState(() {
-        // Simple demo translation
-        translatedText = _getDemoTranslation(_inputController.text);
-        _isTranslating = false;
+        _inputController.clear();
+        translatedText = '';
       });
     }
   }
 
-  String _getDemoTranslation(String text) {
-    // Simple demo translations
-    final translations = {
-      'Hello': 'Bonjour',
-      'Hello, I want to know mre about you': 'Bonjour, je voudrais en savoir plus sur vous',
-      'How are you?': 'Comment allez-vous?',
-      'Thank you': 'Merci',
-      'Good morning': 'Bonjour',
-      'Good evening': 'Bonsoir',
-    };
-    return translations[text] ?? 'Translation: $text';
+  void _translateText() {
+    if (_hasText && _inputController.text.isNotEmpty) {
+      setState(() {
+        _isTranslating = true;
+      });
+
+      _onTranslatePressed();
+    }
   }
 
-  void _speakText(String text) {
-    // Implement text-to-speech functionality
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Speaking: $text'),
-        duration: const Duration(seconds: 1),
-      ),
-    );
+  Future<void> _onTranslatePressed() async {
+    setState(() => _isTranslating = true);
+    try {
+      final result = await _translator.translate(
+        widget.sourceLanguage,
+        widget.targetLanguage,
+        _inputController.text,
+      );
+      setState(() => translatedText = result);
+    } catch (e) {
+      setState(() => translatedText = 'Error: $e');
+    } finally {
+      setState(() => _isTranslating = false);
+    }
   }
+
+  void _speakText(String text) async {
+    await flutterTts.setLanguage("en-US"); // You can make this dynamic per language
+    await flutterTts.setSpeechRate(0.5); // Optional: Adjust rate
+    await flutterTts.speak(text);
+    print(text);
+  }
+
+  // void _speakText(String text) {
+  //   ScaffoldMessenger.of(context).showSnackBar(
+  //     SnackBar(
+  //       content: Text('Speaking: $text'),
+  //       duration: const Duration(seconds: 1),
+  //     ),
+  //   );
+  // }
 
   void _copyText(String text) {
     Clipboard.setData(ClipboardData(text: text));
@@ -101,6 +111,12 @@ class _TranslationScreenState extends State<TranslationScreen> {
   }
 
   @override
+  void dispose() {
+    _inputController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[50],
@@ -108,9 +124,7 @@ class _TranslationScreenState extends State<TranslationScreen> {
         backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios,
-              size: 18,
-              color: Colors.black),
+          icon: const Icon(Icons.arrow_back_ios, size: 18, color: Colors.black),
           onPressed: () => Navigator.of(context).pop(),
         ),
         title: const Text(
@@ -126,407 +140,217 @@ class _TranslationScreenState extends State<TranslationScreen> {
       ),
       body: Container(
         decoration: BoxDecoration(
-            image: DecorationImage(
-                image: AssetImage(
-                  Images.map,
-                ))),
+          image: DecorationImage(image: AssetImage(Images.map)),
+        ),
         child: Column(
           children: [
             Expanded(
               child: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Source Language Section
-                      Container(
-                        width: double.infinity,
-                        // height: 250,
-                        decoration: BoxDecoration(
-                          color: backgroundColorLight,
-                          borderRadius: BorderRadius.circular(12),
-                          boxShadow: [BoxShadow(
-                              blurRadius: 6,
-                              offset: Offset(0, 3),
-                              color: textColorLight.withOpacity(.03)
-                          )
-                          ],
-                          border: Border.all(color: dividerColorLight),
-                        ),
-                        child: Column(
-                          children: [
-                            // Text Input Area
-                            Row(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                    left: 16,
-                                    top: 16,
-                                    right: 16
-                                  ),
-                                  child: Text(
-                                    sourceLanguage,
-                                    style: labelSmall(context).copyWith(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w400,
-                                      color: textColorLight,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Padding(
-                                padding: const EdgeInsets.only(
-                                  top: 8,
-                                    left: 16,
-                                    bottom: 16,
-                                    right: 16
-                                ),
-                                child:
-                                TextField(
-                                  controller: _inputController,
-                                  focusNode: _focusNode,
-                                  maxLines: null,
-                                  // expands: true,
-                                  textAlignVertical: TextAlignVertical.top,
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Input Area
+                    Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: backgroundColorLight,
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            blurRadius: 6,
+                            offset: const Offset(0, 3),
+                            color: textColorLight.withOpacity(.03),
+                          ),
+                        ],
+                        border: Border.all(color: dividerColorLight),
+                      ),
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(16),
+                                child: Text(
+                                  widget.sourceLanguage,
                                   style: labelSmall(context).copyWith(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w400,
                                     color: textColorLight,
                                   ),
-                                  decoration: InputDecoration(
-                                    filled: true,
-                                    fillColor: backgroundColorLight,
-                                    hintText: 'Write to translate',
-                                    hintStyle: labelSmall(context).copyWith(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w400,
-                                      color:hintTextColor,
-                                    ),
-                                    border: InputBorder.none,
-                                    enabledBorder: InputBorder.none,
-                                    disabledBorder: InputBorder.none,
-                                    focusedBorder: InputBorder.none,
-                                    errorBorder: InputBorder.none,
-                                    focusedErrorBorder: InputBorder.none,
-                                    contentPadding: EdgeInsets.zero,
-                                  ),
-                                  // onChanged: (text) => widget.onTextChanged?.call(text),
                                 ),
                               ),
-
-                            Row(
+                            ],
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: TextField(
+                              controller: _inputController,
+                              focusNode: _focusNode,
+                              maxLines: null,
+                              style: labelSmall(context).copyWith(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w400,
+                                color: textColorLight,
+                              ),
+                              decoration: InputDecoration(
+                                filled: true,
+                                fillColor: backgroundColorLight,
+                                hintText: 'Write to translate',
+                                hintStyle: labelSmall(context).copyWith(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w400,
+                                  color: hintTextColor,
+                                ),
+                                border: InputBorder.none,
+                                focusedErrorBorder: InputBorder.none,
+                                focusedBorder: InputBorder.none,
+                                enabledBorder: InputBorder.none,
+                                errorBorder: InputBorder.none,
+                                disabledBorder: InputBorder.none,
+                                contentPadding: EdgeInsets.zero,
+                              ),
+                            ),
+                          ),
+                          Row(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 16.0, vertical: 16.0),
+                                child: GestureDetector(
+                                    onTap: () {
+                                      _speakText(_inputController.text);
+                                    },
+                                    child: Icon(Icons.volume_up,
+                                        color: Colors.blue, size: 24)),
+                              ),
+                            ],
+                          ),
+                          // Action buttons
+                          Container(
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              border: Border(
+                                top: BorderSide(color: Colors.grey[200]!),
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 16.0,vertical: 16.0),
-                                  child: Icon(
-                                    Icons.volume_up,
-                                    color: Colors.blue,
-                                    size: 24,
+                                TextButton(
+                                  onPressed: _hasText ? _clearText : null,
+                                  style: TextButton.styleFrom(
+                                    foregroundColor: textColorLight,
                                   ),
+                                  child: Text(
+                                    'Clear',
+                                    style: labelSmall(context).copyWith(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w400,
+                                      color: _hasText
+                                          ? textColorLight
+                                          : hintTextColor,
+                                    ),
+                                  ),
+                                ),
+                                TextButton(
+                                  onPressed: _hasText && !_isTranslating
+                                      ? _translateText
+                                      : null,
+                                  style: TextButton.styleFrom(
+                                    foregroundColor:
+                                        _hasText ? primaryColor : hintTextColor,
+                                  ),
+                                  child: _isTranslating
+                                      ? const SizedBox(
+                                          width: 16,
+                                          height: 16,
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 2,
+                                            color: Colors.blue,
+                                          ),
+                                        )
+                                      : Text(
+                                          'Translate',
+                                          style: labelSmall(context).copyWith(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w400,
+                                            color: _hasText
+                                                ? primaryColor
+                                                : hintTextColor,
+                                          ),
+                                        ),
                                 ),
                               ],
                             ),
-                            // Bottom Bar with Clear and Translate buttons
-                            Container(
-                              padding: const EdgeInsets.all(16),
-                              decoration: BoxDecoration(
-                                border: Border(
-                                  top: BorderSide(color: Colors.grey[200]!),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    // Translated output
+                    if (translatedText.isNotEmpty)
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: backgroundColorLight,
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            BoxShadow(
+                              blurRadius: 6,
+                              offset: const Offset(0, 3),
+                              color: textColorLight.withOpacity(.03),
+                            ),
+                          ],
+                          border: Border.all(color: dividerColorLight),
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              widget.targetLanguage,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                color: textColorLight,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+                            Text(
+                              translatedText,
+                              style: const TextStyle(
+                                fontSize: 18,
+                                color: Colors.black,
+                                height: 1.4,
+                              ),
+                            ),
+                            const SizedBox(height: 16),
+                            Row(
+                              children: [
+                                GestureDetector(
+                                  onTap: () => _copyText(translatedText),
+                                  child: const Icon(Icons.copy,
+                                      color: Colors.blue, size: 20),
                                 ),
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  // Clear Button
-                                  TextButton(
-                                    onPressed: _inputController.text.isNotEmpty ? _clearText : null,
-                                    style: TextButton.styleFrom(
-                                      foregroundColor: textColorLight,
-                                      padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 8),
-                                    ),
-                                    child: Text(
-                                        'Clear',
-                                        style: labelSmall(context).copyWith(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w400,
-                                          color:_hasText ? textColorLight : hintTextColor,
-                                        )
-                                    ),
-                                  ),
-
-                                  // Translate Button
-                                  TextButton(
-                                    onPressed: _inputController.text.isNotEmpty && !_isTranslating ? _translateText : null,
-                                    style: TextButton.styleFrom(
-                                      foregroundColor: _hasText ? primaryColor :hintTextColor,
-                                      padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 8),
-                                    ),
-                                    child: _isTranslating
-                                        ? const SizedBox(
-                                      width: 16,
-                                      height: 16,
-                                      child: CircularProgressIndicator(
-                                        strokeWidth: 2,
-                                        color: Colors.blue,
-                                      ),
-                                    )
-                                        : Text(
-                                        'Translate',
-                                        style:
-                                        labelSmall(context).copyWith(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w400,
-                                          color:_inputController.text.isNotEmpty ? primaryColor :hintTextColor,
-                                        )
-                                    ),
-                                  ),
-                                ],
-                              ),
+                                const SizedBox(width: 12),
+                                GestureDetector(
+                                  onTap: () => _speakText(translatedText),
+                                  child: const Icon(Icons.volume_up,
+                                      color: Colors.blue, size: 24),
+                                ),
+                              ],
                             ),
                           ],
                         ),
                       ),
-
-
-                      // Input Text Area
-                      // Container(
-                      //   width: double.infinity,
-                      //   // padding: const EdgeInsets.all(16),
-                      //   decoration: BoxDecoration(
-                      //     color: Colors.white,
-                      //     borderRadius: BorderRadius.circular(12),
-                      //     border: Border.all(color: Colors.grey[300]!),
-                      //   ),
-                      //   child: Column(
-                      //     crossAxisAlignment: CrossAxisAlignment.start,
-                      //     children: [
-                      //       Padding(
-                      //         padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      //         child: Text(
-                      //           sourceLanguage,
-                      //           style: const TextStyle(
-                      //             fontSize: 16,
-                      //             color: Colors.grey,
-                      //             fontWeight: FontWeight.w500,
-                      //           ),
-                      //         ),
-                      //       ),
-                      //       // const SizedBox(height: 12),
-                      //       TextField(
-                      //         controller: _inputController,
-                      //         maxLines: null,
-                      //         style: const TextStyle(
-                      //           fontSize: 18,
-                      //           color: Colors.black,
-                      //           height: 1.4,
-                      //         ),
-                      //         decoration: const InputDecoration(
-                      //           filled: true,
-                      //           fillColor: Colors.white,
-                      //           border: InputBorder.none,
-                      //           enabledBorder: InputBorder.none,
-                      //           disabledBorder: InputBorder.none,
-                      //           focusedBorder: InputBorder.none,
-                      //           errorBorder: InputBorder.none,
-                      //           focusedErrorBorder: InputBorder.none,
-                      //           hintText: 'Enter text to translate',
-                      //           hintStyle: TextStyle(
-                      //             color: Colors.grey,
-                      //             fontSize: 18,
-                      //           ),
-                      //         ),
-                      //       ),
-                      //       const SizedBox(height: 16),
-                      //
-                      //       // Speaker Button for Input
-                      //       GestureDetector(
-                      //         onTap: () => _speakText(_inputController.text),
-                      //         child: Container(
-                      //           padding: const EdgeInsets.all(8),
-                      //           decoration: BoxDecoration(
-                      //             color: Colors.blue[50],
-                      //             borderRadius: BorderRadius.circular(8),
-                      //           ),
-                      //           child: const Icon(
-                      //             Icons.volume_up,
-                      //             color: Colors.blue,
-                      //             size: 24,
-                      //           ),
-                      //         ),
-                      //       ),
-                      //     ],
-                      //   ),
-                      // ),
-
-                      const SizedBox(height: 24),
-
-                      // Bottom Action Buttons
-                      // Row(
-                      //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      //   children: [
-                      //     TextButton(
-                      //       onPressed: _inputController.text.isNotEmpty ? _clearText : null,
-                      //       child: Text(
-                      //         'Clear',
-                      //         style: TextStyle(
-                      //           fontSize: 16,
-                      //           color: _inputController.text.isNotEmpty
-                      //               ? Colors.black
-                      //               : Colors.grey,
-                      //           fontWeight: FontWeight.w500,
-                      //         ),
-                      //       ),
-                      //     ),
-                      //     TextButton(
-                      //       onPressed: _inputController.text.isNotEmpty && !_isTranslating
-                      //           ? _translateText
-                      //           : null,
-                      //       child: _isTranslating
-                      //           ? const SizedBox(
-                      //         width: 16,
-                      //         height: 16,
-                      //         child: CircularProgressIndicator(
-                      //           strokeWidth: 2,
-                      //           color: Colors.blue,
-                      //         ),
-                      //       )
-                      //           : Text(
-                      //         'Translate',
-                      //         style: TextStyle(
-                      //           fontSize: 16,
-                      //           color: _inputController.text.isNotEmpty
-                      //               ? Colors.blue
-                      //               : Colors.grey,
-                      //           fontWeight: FontWeight.w600,
-                      //         ),
-                      //       ),
-                      //     ),
-                      //   ],
-                      // ),
-
-                      const SizedBox(height: 20),
-
-                      // Translation Output Section
-                      if (translatedText.isNotEmpty) ...[
-
-
-
-                        // Translation Result
-                        Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                          color: backgroundColorLight,
-                          borderRadius: BorderRadius.circular(12),
-                          boxShadow: [BoxShadow(
-                              blurRadius: 6,
-                              offset: Offset(0, 3),
-                              color: textColorLight.withOpacity(.03)
-                          )
-                          ],
-                          border: Border.all(color: dividerColorLight),
-                        ),
-                          // BoxDecoration(
-                          //   color: Colors.white,
-                          //   borderRadius: BorderRadius.circular(12),
-                          //   border: Border.all(color: Colors.grey[300]!),
-                          // ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                targetLanguage,
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  color: textColorLight,
-                                  fontWeight: FontWeight.w400,
-                                ),
-                              ),
-                              const SizedBox(height: 12),
-                              Text(
-                                translatedText,
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                  color: Colors.black,
-                                  height: 1.4,
-                                ),
-                              ),
-                              const SizedBox(height: 16),
-
-                              // Action Buttons for Translation
-                              Row(
-                                children: [
-                                  GestureDetector(
-                                    onTap: () => _copyText(translatedText),
-                                    child: Container(
-                                      padding: const EdgeInsets.all(8),
-                                      // decoration: BoxDecoration(
-                                      //   color: Colors.blue[50],
-                                      //   borderRadius: BorderRadius.circular(8),
-                                      // ),
-                                      child: const Icon(
-                                        Icons.copy,
-                                        color: Colors.blue,
-                                        size: 20,
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 12),
-                                  GestureDetector(
-                                    onTap: () => _speakText(translatedText),
-                                    child: Container(
-                                      padding: const EdgeInsets.all(8),
-                                      // decoration: BoxDecoration(
-                                      //   color: Colors.blue[50],
-                                      //   borderRadius: BorderRadius.circular(8),
-                                      // ),
-                                      child: const Icon(
-                                        Icons.volume_up,
-                                        color: Colors.blue,
-                                        size: 24,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ],
-                  ),
+                  ],
                 ),
               ),
             ),
           ],
         ),
       ),
-    );
-  }
-
-  @override
-  void dispose() {
-    _inputController.dispose();
-    super.dispose();
-  }
-}
-
-// Demo App
-class TranslationApp extends StatelessWidget {
-  const TranslationApp({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Translation App',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        fontFamily: 'SF Pro Display',
-      ),
-      home: const TranslationScreen(),
-      debugShowCheckedModeBanner: false,
     );
   }
 }

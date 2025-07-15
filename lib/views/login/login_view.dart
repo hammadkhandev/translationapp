@@ -81,17 +81,17 @@ class LoginView extends StatelessWidget {
                   width: 300.sp,
                   onPressed: () async {
                     // Attempt to sign in with Google
-                    User? user = await _authService.signInWithGoogle();
+                    /*User? user = await _authService.signInWithGoogle();
                     // If sign-in is successful, navigate to the HomeScreen
                     if (user != null) {
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (_) => Dashboard()),
                       );
-                    }
-                    // Navigator.push(context, MaterialPageRoute(builder: (context) {
-                    //   return Dashboard();
-                    // }));
+                    }*/
+                    Navigator.push(context, MaterialPageRoute(builder: (context) {
+                      return Dashboard();
+                    }));
                   },
                   icon: Images.google,
                   text: 'Continue with Google',
