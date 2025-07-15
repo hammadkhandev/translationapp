@@ -29,4 +29,5 @@ class OpenAIService {
       throw Exception('Error ${res.statusCode}: ${res.body}');
     }
   }
+
 }

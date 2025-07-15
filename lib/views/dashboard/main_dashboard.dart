@@ -1,8 +1,9 @@
+import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../utils/images.dart';
-import 'camera_screen.dart';
+import 'camera_translation_screen.dart';
 import 'voice_screen.dart';
 import 'home_screen.dart'; // renamed from Dashboard
 
@@ -19,7 +20,7 @@ class _MainDashboardState extends State<MainDashboard> {
   final List<Widget> _screens = const [
     VoiceScreen(),
     HomeScreen(), // Previously Dashboard
-    CameraScreen(),
+    // CameraScreen(),
   ];
 
   @override
@@ -28,7 +29,22 @@ class _MainDashboardState extends State<MainDashboard> {
       body: _screens[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
-        onTap: (index) => setState(() => _currentIndex = index),
+        onTap: (index) async {
+          if (index == 2) {
+            // Go to CameraScreen without bottom bar
+            final cameras = await availableCameras();
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => CameraTranslationScreen(cameras: cameras,)),
+            ).then((_) {
+              setState(() => _currentIndex );
+            });
+          } else {
+            setState(() => _currentIndex = index);
+          }
+        },
+
+        // onTap: (index) => setState(() => _currentIndex = index),
         selectedItemColor: Theme.of(context).colorScheme.secondary,
         unselectedItemColor: Colors.grey,
         backgroundColor: Theme.of(context).primaryColor,

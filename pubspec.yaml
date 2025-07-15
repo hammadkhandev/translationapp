@@ -44,8 +44,19 @@ dependencies:
   cloud_firestore: ^5.6.11
   flutter_smart_dialog: ^4.9.8+8
 
+
+  permission_handler: ^11.3.1
 #  text speak
   flutter_tts: ^3.8.5
+  speech_to_text: ^7.2.0
+  manual_speech_to_text: ^1.0.4
+
+  # camera
+  camera: ^0.10.5+5
+  image_picker: ^1.0.4
+#  google_mlkit_text_recognition: ^0.15.0
+#  google_mlkit_translation: ^0.13.0
+
 
 
 dev_dependencies:

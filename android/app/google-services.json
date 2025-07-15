@@ -22,6 +22,14 @@
           }
         },
         {
+          "client_id": "893830471888-n2ukpvhktogt2rmr5ddicgf4tkv8c4r1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.itranslation.app",
+            "certificate_hash": "c4ada702fa67231965e610d02a2bf878ed2e47e2"
+          }
+        },
+        {
           "client_id": "893830471888-sltgt3o0t41mtl0n0safpfa64l39i6eq.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

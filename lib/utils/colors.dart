@@ -8,6 +8,8 @@ Color secondaryColor = Colors.white;
 const Color backgroundColorLight = Colors.white;
 const Color backgroundColorDark = Color(0xFF0E0E0E);
 
+const Color backgroundColorTextField = Color(0xffF1F5F9);
+
 // card colors
 const Color cardColorLight = Color(0xFFFAFAFA);
 const Color cardColorDark = Color(0xFF181a20);
@@ -17,6 +19,10 @@ const Color transparent = Colors.transparent;
 // shadow colors
 const Color shadowColorLight = Color(0xFFE8E8E8);
 const Color shadowColorDark = Color(0xFF3A3A3A);
+
+// border colors
+const Color borderColorLight = Color(0xFFE2E8F0);
+const Color borderColorDark = Color(0xFF35383F);
 
 // divider colors
 
@@ -31,6 +37,8 @@ Color disabledColorDark = const Color(0xFFB0B0B0);
 const Color hintColorLight = Color(0xff606060);
 const Color hintColorDark = Color(0xFF909090);
 const Color hintTextColor = Color(0xFF6B7280);
+
+
 
 // text colors
 const Color textColorLight = Colors.black;

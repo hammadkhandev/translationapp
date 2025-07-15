@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
         return MaterialApp(
           title: 'Flutter Demo',
           theme: light(context),
-          darkTheme: dark(context),
+          // darkTheme: dark(context),
           home: const SplashView(),
           navigatorObservers: [FlutterSmartDialog.observer],
         );

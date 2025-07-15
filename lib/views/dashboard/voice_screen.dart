@@ -1,173 +1,275 @@
 import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
-import 'package:norsk_tolk/views/dashboard/voice_input.dart';
-import 'package:norsk_tolk/views/dashboard/widgets/mic_box.dart';
-
+import 'package:norsk_tolk/views/common/home_widget.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:speech_to_text/speech_to_text.dart' as stt;
+import 'package:flutter_tts/flutter_tts.dart';
+import '../../models/language_data.dart';
+import '../../service/openai_service.dart';
+import '../../utils/app_constns.dart';
+import '../choose_language/choose_language.dart';
+import '../dashboard/widgets/mic_box.dart';
 import 'language_selector.dart';
 
 class VoiceScreen extends StatefulWidget {
   const VoiceScreen({super.key});
-
   @override
   State<VoiceScreen> createState() => _VoiceScreenState();
 }
 
-class _VoiceScreenState extends State<VoiceScreen> with TickerProviderStateMixin{
-  String sourceLanguage = 'English USA';
-  String targetLanguage = 'French';
-  // Mic 1 state
-  String displayText1 = 'Please tab Mic to Talk';
-  bool _isListening1 = false;
-  bool _isTranslating1 = false;
+class _VoiceScreenState extends State<VoiceScreen> with TickerProviderStateMixin {
+  late stt.SpeechToText _speech;
+  late FlutterTts _tts;
+  late OpenAIService _translator;
 
-// Mic 2 state
-  String displayText2 = 'Please tab Mic to Talk';
-  bool _isListening2 = false;
-  bool _isTranslating2 = false;
+  // Locale codes
+  late String sourceLanguageCode ;
+  late String targetLanguageCode ;
 
-// Animations
-  late AnimationController _pulseController1;
-  late Animation<double> _pulseAnimation1;
+  String  sourceLanguage ='', targetLanguage=''  ;
 
-  late AnimationController _pulseController2;
-  late Animation<double> _pulseAnimation2;
+  // Display texts
+  String sourceText = 'Tap Mic to talk';
+  String targetText = 'Tap Mic to talk';
+
+  bool translatingEn = false, translatingUr = false;
+  bool listeningEn = false, listeningUr = false;
+
+  late AnimationController ctlEn, ctlUr;
+  late Animation<double> animEn, animUr;
+
   @override
   void initState() {
     super.initState();
+    _loadLanguages();
+    _speech = stt.SpeechToText();
+    _tts = FlutterTts();
+    _translator = OpenAIService(AppConstns.gptToke);
 
-    _pulseController1 = AnimationController(
-      duration: const Duration(milliseconds: 1000),
-      vsync: this,
-    );
-    _pulseAnimation1 = Tween<double>(
-      begin: 1.0,
-      end: 1.2,
-    ).animate(CurvedAnimation(
-      parent: _pulseController1,
-      curve: Curves.easeInOut,
-    ));
-
-    _pulseController2 = AnimationController(
-      duration: const Duration(milliseconds: 1000),
-      vsync: this,
-    );
-    _pulseAnimation2 = Tween<double>(
-      begin: 1.0,
-      end: 1.2,
-    ).animate(CurvedAnimation(
-      parent: _pulseController2,
-      curve: Curves.easeInOut,
-    ));
-  }
-  void _startListening1() async {
-    setState(() {
-      _isListening1 = true;
-      displayText1 = 'Listening...';
-    });
-
-    _pulseController1.repeat(reverse: true);
-    await Future.delayed(Duration(seconds: 2));
-
-    setState(() {
-      _isListening1 = false;
-      _isTranslating1 = true;
-      displayText1 = 'Processing...';
-    });
-
-    _pulseController1.stop();
-    _pulseController1.reset();
-
-    await Future.delayed(Duration(seconds: 1));
-
-    setState(() {
-      _isTranslating1 = false;
-      displayText1 = 'Bonjour, comment allez-vous?';
-    });
+    _speech.initialize();
+    ctlEn = AnimationController(vsync: this, duration: const Duration(milliseconds: 800));
+    animEn = Tween(begin:1.0, end:1.2).animate(CurvedAnimation(parent: ctlEn, curve: Curves.easeInOut));
+    ctlUr = AnimationController(vsync: this, duration: const Duration(milliseconds: 800));
+    animUr = Tween(begin:1.0, end:1.2).animate(CurvedAnimation(parent: ctlUr, curve: Curves.easeInOut));
   }
 
-  void _startListening2() async {
-    setState(() {
-      _isListening2 = true;
-      displayText2 = 'Listening...';
-    });
-
-    _pulseController2.repeat(reverse: true);
-    await Future.delayed(Duration(seconds: 2));
-
-    setState(() {
-      _isListening2 = false;
-      _isTranslating2 = true;
-      displayText2 = 'Processing...';
-    });
-
-    _pulseController2.stop();
-    _pulseController2.reset();
-
-    await Future.delayed(Duration(seconds: 1));
-
-    setState(() {
-      _isTranslating2 = false;
-      displayText2 = 'Hola, ¿cómo estás?';
-    });
-  }
-
-  void _clearText1() {
-    setState(() {
-      displayText1 = 'Please tab Mic to Talk';
-    });
-  }
-
-  void _clearText2() {
-    setState(() {
-      displayText2 = 'Please tab Mic to Talk';
-    });
-  }
   @override
   void dispose() {
-    _pulseController1.dispose();
-    _pulseController2.dispose();
+    ctlEn.dispose();
+    ctlUr.dispose();
+    _tts.stop();
     super.dispose();
   }
 
+  Future<void> _loadLanguages() async {
+    final prefs = await SharedPreferences.getInstance();
+    final allLanguages = [...freeLanguages, ];
+
+    final savedSource = prefs.getString('sourceLanguage') ?? 'English USA';
+    final savedTarget = prefs.getString('targetLanguage') ?? 'French';
+
+    final sourceLang = allLanguages.firstWhere(
+          (lang) => lang.name == savedSource,
+      orElse: () => freeLanguages.first,
+    );
+
+    final targetLang = allLanguages.firstWhere(
+          (lang) => lang.name == savedTarget,
+      orElse: () => freeLanguages.first,
+    );
+
+    setState(() {
+      sourceLanguage = sourceLang.name;
+      targetLanguage = targetLang.name;
+      sourceLanguageCode = sourceLang.code;
+      targetLanguageCode = targetLang.code;
+    });
+  }
+
+  void _openLanguageSelector(bool isSource) async {
+    final currentLang = isSource ? sourceLanguage : targetLanguage;
+
+    final allLanguages = [...freeLanguages, ];
+    final matchingLang = allLanguages.firstWhere(
+          (lang) => lang.name == currentLang,
+      orElse: () => freeLanguages.first,
+    );
+
+    final currentLangId = matchingLang.id;
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => ChooseLanguage(
+          selectedLanguageId: currentLangId,
+          onLanguageSelected: (String selectedLanguage) async {
+            final prefs = await SharedPreferences.getInstance();
+
+            // Prevent selecting same as the other
+            if ((isSource && selectedLanguage == targetLanguage) ||
+                (!isSource && selectedLanguage == sourceLanguage)) {
+              final role = isSource ? "targetLanguage" : "sourceLanguage";
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('You already selected $selectedLanguage in $role'),
+                ),
+              );
+              return;
+            }
+
+            final selectedLang = allLanguages.firstWhere(
+                  (lang) => lang.name == selectedLanguage,
+              orElse: () => freeLanguages.first,
+            );
+
+            setState(() {
+              if (isSource) {
+                sourceLanguage = selectedLang.name;
+                sourceLanguageCode = selectedLang.code;
+                prefs.setString('sourceLanguage', selectedLang.name);
+              } else {
+                targetLanguage = selectedLang.name;
+                targetLanguageCode = selectedLang.code;
+                prefs.setString('targetLanguage', selectedLang.name);
+              }
+            });
+          },
+        ),
+      ),
+    );
+  }
+
+  void _toggleMic(bool isEnMic) {
+    final locale = isEnMic ? sourceLanguageCode : targetLanguageCode;
+    final anim = isEnMic ? ctlEn : ctlUr;
+
+    final listening = isEnMic ? listeningEn : listeningUr;
+    if (listening) {
+      _speech.stop();
+      anim.stop();
+    } else {
+      setState(() {
+        if (isEnMic) {
+          listeningEn = true;
+          sourceText = 'Listening...';
+        } else {
+          listeningUr = true;
+          targetText = 'Listening...';
+        }
+      });
+      anim.repeat(reverse: true);
+
+      _speech.listen(
+        localeId: locale,
+        onResult: (res) {
+          setState(() {
+            if (isEnMic) sourceText = res.recognizedWords;
+            else targetText = res.recognizedWords;
+          });
+        },
+        listenFor: const Duration(seconds:30),
+        pauseFor: const Duration(seconds:3),
+        onSoundLevelChange: (_) {},
+        cancelOnError: true,
+      );
+
+      _speech.statusListener = (status) {
+        if (!_speech.isListening) {
+          _onStop(isEnMic);
+        }
+      };
+    }
+  }
+
+  Future<void> _onStop(bool wasEnMic) async {
+    ctlEn.stop();
+    ctlUr.stop();
+
+    setState(() {
+      listeningEn = listeningUr = false;
+      if (wasEnMic) translatingUr = true;
+      else translatingEn = true;
+    });
+
+    final spoken = wasEnMic ? sourceText : targetText;
+    final translation = wasEnMic
+        ? await _translator.translate(sourceLanguage, targetLanguage, spoken)
+        : await _translator.translate(targetLanguage, sourceLanguage, spoken);
+
+    setState(() {
+      if (wasEnMic) {
+        targetText = translation;
+        translatingUr = false;
+      } else {
+        sourceText = translation;
+        translatingEn = false;
+      }
+    });
+
+    final speakLang = wasEnMic ? targetLanguageCode : sourceLanguageCode;
+    await _tts.setLanguage(speakLang);
+    await _tts.speak(translation);
+  }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Center(
-        child: Column(
-          children: [
-            Transform.rotate(
-              angle: -math.pi / 1.0,
-              child: MicTextBox(
-                hintText: 'Please tab Mic to Talk',
-                displayText: displayText1,
-                isListening: _isListening1,
-                isTranslating: _isTranslating1,
-                onClear: _clearText1,
-                onMicTap: _startListening1,
-                animation: _pulseAnimation1,
-              ),
+      child: HomeWidget(
+        child: Column(children: [
+          // English Mic Box
+          Transform.rotate(
+            angle: -math.pi,
+            child: MicTextBox(
+              hintText: 'Tap Mic to speak',
+              displayText: sourceText,
+              isListening: listeningEn,
+              isTranslating: translatingEn,
+              onClear: () => setState(() => sourceText = 'Tap Mic to talk'),
+              onMicTap: () => _toggleMic(true),
+              animation: animEn,
             ),
-      
-            LanguageSelector(
-              sourceLanguage: sourceLanguage,
-              targetLanguage: targetLanguage,
-            ),
-      
-            MicTextBox(
-              hintText: 'Please tab Mic to Talk',
-              displayText: displayText2,
-              isListening: _isListening2,
-              isTranslating: _isTranslating2,
-              onClear: _clearText2,
-              onMicTap: _startListening2,
-              animation: _pulseAnimation2,
-            ),
-      
-      
-          ],
-        ),
+          ),
+          // Language selector
+          LanguageSelector(
+            sourceLanguage: sourceLanguage,
+            targetLanguage: targetLanguage,
+            onSwap: () async {
+              final prefs = await SharedPreferences.getInstance();
+              setState(() {
+                // Swap language names
+                final tempLang = sourceLanguage;
+                sourceLanguage = targetLanguage;
+                targetLanguage = tempLang;
+        
+                // Swap locale codes
+                final tempCode = sourceLanguageCode;
+                sourceLanguageCode = targetLanguageCode;
+                targetLanguageCode = tempCode;
+        
+                // Save both to SharedPreferences
+                prefs.setString('sourceLanguage', sourceLanguage);
+                prefs.setString('targetLanguage', targetLanguage);
+              });
+            },
+            onSourceLanguageChanged:(_) {
+              _openLanguageSelector(true); // source
+            },
+            onTargetLanguageChanged: (_) {
+              _openLanguageSelector(false); // target
+            },
+          ),
+        
+          // LanguageSelector can be hidden, since locale is hardcoded
+          MicTextBox(
+            hintText: 'Tap Mic to speak',
+            displayText: targetText,
+            isListening: listeningUr,
+            isTranslating: translatingUr,
+            onClear: () => setState(() => targetText = 'Tap Mic to talk'),
+            onMicTap: () => _toggleMic(false),
+            animation: animUr,
+          ),
+        ]),
       ),
     );
   }
