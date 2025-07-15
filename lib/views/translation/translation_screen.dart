@@ -84,8 +84,8 @@ class _TranslationScreenState extends State<TranslationScreen> {
     }
   }
 
-  void _speakText(String text) async {
-    await flutterTts.setLanguage("en-US"); // You can make this dynamic per language
+  void _speakText(String text,String language ) async {
+    await flutterTts.setLanguage(language); // You can make this dynamic per language
     await flutterTts.setSpeechRate(0.5); // Optional: Adjust rate
     await flutterTts.speak(text);
     print(text);
@@ -219,7 +219,7 @@ class _TranslationScreenState extends State<TranslationScreen> {
                                     horizontal: 16.0, vertical: 16.0),
                                 child: GestureDetector(
                                     onTap: () {
-                                      _speakText(_inputController.text);
+                                      _speakText(_inputController.text, 'en-US');
                                     },
                                     child: Icon(Icons.volume_up,
                                         color: Colors.blue, size: 24)),
@@ -335,7 +335,7 @@ class _TranslationScreenState extends State<TranslationScreen> {
                                 ),
                                 const SizedBox(width: 12),
                                 GestureDetector(
-                                  onTap: () => _speakText(translatedText),
+                                  onTap: () => _speakText(translatedText,'fr'),
                                   child: const Icon(Icons.volume_up,
                                       color: Colors.blue, size: 24),
                                 ),
