@@ -60,29 +60,27 @@ class _DashboardState extends State<Dashboard> {
             //   width: 1.sw,
             //   fit: BoxFit.cover,
             // ),
-            Positioned(
-                top: 0,
-                child: Container(
-                  padding:
-                      EdgeInsets.only(left: 25.sp, right: 25.sp, top: 25.sp),
-                  height: 80.sp,
-                  width: 1.sw,
-                  color: Theme.of(context).primaryColor,
-                  child: Row(
-                    children: [
-                      Image.asset(
-                        Images.splashLogo,
-                        height: 50.sp,
-                        width: 100.sp,
-                      ),
-                      Spacer(),
-                      Icon(
-                        Icons.settings_outlined,
-                        color: textColorLight,
-                      ),
-                    ],
+            Container(
+              padding:
+                  EdgeInsets.only(left: 25.sp, right: 25.sp, top: 25.sp),
+              height: 80.sp,
+              width: 1.sw,
+              color: Theme.of(context).primaryColor,
+              child: Row(
+                children: [
+                  Image.asset(
+                    Images.splashLogo,
+                    height: 50.sp,
+                    width: 100.sp,
                   ),
-                )),
+                  Spacer(),
+                  Icon(
+                    Icons.settings_outlined,
+                    color: textColorLight,
+                  ),
+                ],
+              ),
+            ),
             LanguageSelector(
               sourceLanguage: 'English USA',
               targetLanguage: 'French',
