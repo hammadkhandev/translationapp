@@ -88,17 +88,9 @@ class _TranslationScreenState extends State<TranslationScreen> {
     await flutterTts.setLanguage(language); // You can make this dynamic per language
     await flutterTts.setSpeechRate(0.5); // Optional: Adjust rate
     await flutterTts.speak(text);
-    print(text);
+    debugPrint(text);
   }
 
-  // void _speakText(String text) {
-  //   ScaffoldMessenger.of(context).showSnackBar(
-  //     SnackBar(
-  //       content: Text('Speaking: $text'),
-  //       duration: const Duration(seconds: 1),
-  //     ),
-  //   );
-  // }
 
   void _copyText(String text) {
     Clipboard.setData(ClipboardData(text: text));

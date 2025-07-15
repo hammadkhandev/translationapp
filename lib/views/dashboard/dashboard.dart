@@ -19,8 +19,6 @@ class _DashboardState extends State<Dashboard> {
   int _currentIndex = 0;
   String inputText = '';
   String translatedText = '';
-  String _translated = '';
-  bool _loading = false;
 
   String sourceLanguage = 'English USA';
   String targetLanguage = 'French';

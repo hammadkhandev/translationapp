@@ -7,6 +7,8 @@ import 'package:norsk_tolk/utils/styles.dart';
 import 'package:norsk_tolk/views/dashboard/dashboard.dart';
 import 'package:norsk_tolk/views/login/components/button.dart';
 
+import '../dashboard/main_dashboard.dart';
+
 class LoginView extends StatelessWidget {
   LoginView({super.key});
 
@@ -90,7 +92,7 @@ class LoginView extends StatelessWidget {
                       );
                     }*/
                     Navigator.push(context, MaterialPageRoute(builder: (context) {
-                      return Dashboard();
+                      return MainDashboard();
                     }));
                   },
                   icon: Images.google,

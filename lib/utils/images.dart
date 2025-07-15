@@ -10,6 +10,7 @@ class Images {
   static const String google = 'assets/images/google.png';
   static const String apple = 'assets/images/apple.png';
   static const String voice = 'assets/images/voice.png';
+  static const String mic = 'assets/images/mic.png';
   static const String camara = 'assets/images/camra.png';
   static const String map = 'assets/images/maps.png';
 
