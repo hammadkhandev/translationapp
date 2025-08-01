@@ -1,0 +1,40 @@
+{
+  "setting": {
+    "id": 1,
+    "logo": "https://example.com/logo.png",
+    "app_name": "Suitland App",
+    "timezone": "UTC",
+    "default_avatar": "https://example.com/avatar.png"
+  },
+  "language_list": [
+    {
+      "id": 1,
+      "lang_name": "English",
+      "lang_code": "en",
+      "is_default": "yes",
+      "status": 1,
+      "lang_direction": "LTR",
+      "created_at": "2024-01-01",
+      "updated_at": "2024-01-01"
+    }
+  ],
+  "currency_list": [
+    {
+      "id": 1,
+      "currency_name": "US Dollar",
+      "country_code": "US",
+      "currency_code": "USD",
+      "currency_icon": "$",
+      "is_default": "yes",
+      "currency_rate": 1.0,
+      "currency_position": "left",
+      "status": "active",
+      "created_at": "2024-01-01",
+      "updated_at": "2024-01-01"
+    }
+  ],
+  "localizations": {
+    "en": "English",
+    "fr": "French"
+  }
+}
