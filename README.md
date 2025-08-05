@@ -1,18 +1,40 @@
-#  i transaction 
 
-A new Flutter project.
+# iTransaction
 
-Hammad khan
+A modern Flutter application by Hammad Khan.
+
+## Overview
+
+**iTransaction** is a robust Flutter project designed as a foundation for scalable, cross-platform mobile development. This repository serves as a practical starting point, featuring best practices and a flexible architecture tailored for Flutter experts and enthusiasts.
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+To set up and run iTransaction locally:
 
-A few resources to get you started if this is your first Flutter project:
+1. **Clone the repository:**
+   ```sh
+   git clone https://github.com/hammadkhandev/translationapp.git
+   cd translationapp
+   ```
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+2. **Install dependencies:**
+   ```sh
+   flutter pub get
+   ```
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+3. **Run the app:**
+   ```sh
+   flutter run
+   ```
+
+## Resources
+
+Enhance your Flutter expertise with these official resources:
+
+- [Flutter Codelab: Build your first app](https://docs.flutter.dev/get-started/codelab)
+- [Flutter Cookbook: Practical samples](https://docs.flutter.dev/cookbook)
+- [Flutter Documentation](https://docs.flutter.dev/) — Tutorials, API reference, and guidance for mobile, web, and desktop development.
+
+## Contributing
+
+Contributions, issues, and feature requests are welcome! Feel free to check [issues](https://github.com/hammadkhandev/translationapp/issues) or submit a pull request.
