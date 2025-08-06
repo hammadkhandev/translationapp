@@ -42,7 +42,6 @@ Contributions, issues, and feature requests are welcome! Feel free to check [iss
 ![App Logo](https://github.com/hammadkhandev/translationapp/raw/main/assets/images/logo.png)
 
 
-![VS Code](https://img.shields.io/badge/VS%20Code-007ACC?logo=vscode&logoColor=white)
 
 
 ![Flutter](https://img.shields.io/badge/Flutter-02569B?logo=flutter&logoColor=white)
