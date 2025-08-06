@@ -40,3 +40,6 @@ Enhance your Flutter expertise with these official resources:
 Contributions, issues, and feature requests are welcome! Feel free to check [issues](https://github.com/hammadkhandev/translationapp/issues) or submit a pull request.
 
 ![App Logo](https://github.com/hammadkhandev/translationapp/raw/main/assets/images/logo.png)
+
+![Flutter](https://raw.githubusercontent.com/flutter/website/master/src/_assets/image/flutter-lockup-bg.jpg)
+![Dart](https://dart.dev/assets/shared/dart/icon/64.png)
