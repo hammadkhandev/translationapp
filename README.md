@@ -41,5 +41,6 @@ Contributions, issues, and feature requests are welcome! Feel free to check [iss
 
 ![App Logo](https://github.com/hammadkhandev/translationapp/raw/main/assets/images/logo.png)
 
-![Flutter](https://raw.githubusercontent.com/flutter/website/master/src/_assets/image/flutter-lockup-bg.jpg)
-![Dart](https://dart.dev/assets/shared/dart/icon/64.png)
+
+![Flutter](https://img.shields.io/badge/Flutter-02569B?logo=flutter&logoColor=white)
+![Dart](https://img.shields.io/badge/Dart-0175C2?logo=dart&logoColor=white)
