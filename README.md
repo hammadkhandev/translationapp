@@ -42,8 +42,8 @@ Contributions, issues, and feature requests are welcome! Feel free to check [iss
 ![App Logo](https://github.com/hammadkhandev/translationapp/raw/main/assets/images/logo.png)
 
 
-![Flutter](https://img.shields.io/badge/Flutter-02569B?logo=flutter&logoColor=white)
-![Dart](https://img.shields.io/badge/Dart-0175C2?logo=dart&logoColor=white)
+![VS Code](https://img.shields.io/badge/VS%20Code-007ACC?logo=vscode&logoColor=white)
+
 
 ![Flutter](https://img.shields.io/badge/Flutter-02569B?logo=flutter&logoColor=white)
 ![Dart](https://img.shields.io/badge/Dart-0175C2?logo=dart&logoColor=white)
