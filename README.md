@@ -38,3 +38,5 @@ Enhance your Flutter expertise with these official resources:
 ## Contributing
 
 Contributions, issues, and feature requests are welcome! Feel free to check [issues](https://github.com/hammadkhandev/translationapp/issues) or submit a pull request.
+
+![App Logo](https://github.com/hammadkhandev/translationapp/raw/main/assets/images/logo.png)
